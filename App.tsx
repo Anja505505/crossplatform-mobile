@@ -1,14 +1,20 @@
-import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { UserInfo } from "./src/screens/UserInfo/UserInfo";
-import { ToastProvider } from "react-native-toast-notifications";
 import { NavigationContainer } from "@react-navigation/native";
-import { Provider, useSelector, useDispatch } from "react-redux";
-import { store } from "./src/store/store";
-import { UserForm } from "./src/screens/UserForm/UserForm";
-import { UserList } from "./src/screens/UserList/UserList";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
 import { StyleSheet } from "react-native";
+import { ToastProvider } from "react-native-toast-notifications";
+import { Provider, useSelector, useDispatch } from "react-redux";
+import { PostList } from "./src/screens/PostList/PostList"
+import { PostForm }  from "./src/screens/PostForm/PostForm";
+import { UserForm } from "./src/screens/UserForm/UserForm";
+import { UserInfo } from "./src/screens/UserInfo/UserInfo";
+import { UserList } from "./src/screens/UserList/UserList";
+import { persistor, store } from "./src/store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
+
 
 const UserListStack = createNativeStackNavigator();
 
@@ -17,6 +23,7 @@ const UserListStackScreen = () => {
     <UserListStack.Navigator>
       <UserListStack.Screen name="UserList" component={UserList} />
       <UserListStack.Screen name="UserInfo" component={UserInfo} />
+      <UserListStack.Screen name="UserForm" component={UserForm} />
     </UserListStack.Navigator>
   );
 };
@@ -34,7 +41,8 @@ const NavigationWrapper = () => {
           component={UserListStackScreen}
           options={{ headerShown: false }}
         />
-        <Tab.Screen name="UserForm" component={UserForm} />
+       <Tab.Screen name="PostForm" component={PostForm} />
+         <Tab.Screen name="UserForm" component={UserForm} />
         {loggedInAs && (
           <Tab.Screen
             name="UserInfo"
@@ -42,9 +50,9 @@ const NavigationWrapper = () => {
             options={{
               title: `${loggedInAs.firstName} ${loggedInAs.lastName}`,
             }}
-          />
-        )}
-      </Tab.Navigator>
+          />)}
+        <Tab.Screen name="PostList" component={PostList} />
+        </Tab.Navigator>
     </NavigationContainer>
   );
 };
@@ -53,7 +61,11 @@ export default function App() {
   return (
     <ToastProvider>
       <Provider store={store}>
-        <NavigationWrapper />
+        <PersistGate loading={null} persistor={persistor}>
+          <I18nextProvider i18n={i18n}>
+            <NavigationWrapper />
+          </I18nextProvider>
+        </PersistGate>
       </Provider>
     </ToastProvider>
   );

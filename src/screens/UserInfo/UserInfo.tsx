@@ -1,7 +1,9 @@
-import { StyleSheet, View } from "react-native";
 import { Button, Text } from "@rneui/themed";
-import { logIn, logOut } from "../../store/slices/authSlice";
+import { StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+
+import { logIn, logOut } from "../../store/slices/authSlice";
+
 
 export const UserInfo = ({ route, navigation }) => {
   const loggedInAs = useSelector((state: any) => state.auth.loggedInAs);
@@ -20,14 +22,12 @@ export const UserInfo = ({ route, navigation }) => {
               onPress={() => dispatch(logOut())}
               title="Logga ut"
               color="error"
-            ></Button>
+            />
+
           </>
         ) : (
           <>
-            <Button
-              onPress={() => dispatch(logIn(user))}
-              title="Logga in"
-            ></Button>
+            <Button onPress={() => dispatch(logIn(user))} title="Logga in" />
           </>
         )}
       </View>
